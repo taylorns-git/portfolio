@@ -1,0 +1,187 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOpcqrRorf0rTuiREcATn8h",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/taylorns-git/portfolio/blob/main/Gradebook.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os\n",
+        "import csv\n",
+        "\n",
+        "grades = []\n",
+        "\n",
+        "def add_grade():\n",
+        "    print('\\n= Add New Grade =')\n",
+        "\n",
+        "    student = input('Student name: ')\n",
+        "    subject = input('Class subject: ')\n",
+        "\n",
+        "    # Loop to ensure the user enters a valid number for the grade.\n",
+        "    while True:\n",
+        "        try:\n",
+        "            grade = float(input('Enter grade: '))\n",
+        "\n",
+        "            if grade < 0:\n",
+        "                print('Grade cannot be negative. Please try again.')\n",
+        "            else:\n",
+        "                break\n",
+        "        except ValueError:\n",
+        "            print('Invalid grade. Please enter a numeric value.')\n",
+        "\n",
+        "    # Create a dictionary to hold the details of the new grade.\n",
+        "    gradebook = {\n",
+        "        'student': student,\n",
+        "        'subject': subject,\n",
+        "        'grade': grade,\n",
+        "    }\n",
+        "\n",
+        "    # Add the newly created grade dictionary to the global grades list.\n",
+        "    grades.append(gradebook)\n",
+        "    print('Grade added successfully!')\n",
+        "\n",
+        "def view_grades():\n",
+        "    print('\\n= View Grades = ')\n",
+        "\n",
+        "    if not grades:\n",
+        "        print('No grades found yet. Add some grades first!')\n",
+        "        return\n",
+        "\n",
+        "    for gradebook in grades:\n",
+        "        student = gradebook['student']\n",
+        "        subject = gradebook['subject']\n",
+        "        grade = gradebook['grade']\n",
+        "\n",
+        "        print(f'Student {student} | Subject {subject} | Grade {grade:.2f}')\n",
+        "\n",
+        "def save_grades():\n",
+        "    if not grades:\n",
+        "        print('No grades to save.')\n",
+        "        return\n",
+        "\n",
+        "    print('\\nSaving grades to gradebook.csv...')\n",
+        "\n",
+        "    with open('gradebook.csv', 'w', newline='') as file:\n",
+        "\n",
+        "        fieldnames = ['student', 'subject', 'grade']\n",
+        "\n",
+        "        writer = csv.DictWriter(file, fieldnames=fieldnames)\n",
+        "\n",
+        "        writer.writeheader()\n",
+        "        writer.writerows(grades)\n",
+        "    print('Grades saved successfully to gradebook.csv!')\n",
+        "\n",
+        "def load_grades():\n",
+        "    global grades\n",
+        "    print('\\nLoading grades from gradebook.csv.')\n",
+        "\n",
+        "    if os.path.exists('gradebook.csv'):\n",
+        "        grades.clear()\n",
+        "        with open('gradebook.csv', 'r', newline='') as file:\n",
+        "            reader = csv.DictReader(file)\n",
+        "            for row in reader:\n",
+        "                try:\n",
+        "                    row['grade'] = float(row['grade'])\n",
+        "                    grades.append(row)\n",
+        "                except ValueError:\n",
+        "                    print(f'Warning: could not convert grade for row: {row}.')\n",
+        "        print(f'Successfully loaded {len(grades)} grades from gradebook.csv.')\n",
+        "    else:\n",
+        "        print('No grades file (gradebook.csv) found, starting with an empty grade.')\n",
+        "\n",
+        "def main_menu():\n",
+        "    # Automatically load grades.\n",
+        "    load_grades()\n",
+        "\n",
+        "\n",
+        "    while True:\n",
+        "        print('\\n= Gradebook menu =')\n",
+        "        print('1. Add New Grade')\n",
+        "        print('2. View Grades')\n",
+        "        print('3. Save Grades')\n",
+        "        print('4. Exit')\n",
+        "\n",
+        "        choice = input('Enter your choice: ')\n",
+        "\n",
+        "        if choice == '1':\n",
+        "            add_grade()\n",
+        "        elif choice == '2':\n",
+        "            view_grades()\n",
+        "        elif choice == '3':\n",
+        "            save_grades()\n",
+        "        elif choice == '4':\n",
+        "            print('Exiting Gradebook. Goodbye!')\n",
+        "            save_grades()\n",
+        "            break\n",
+        "        else:\n",
+        "            print('Invalid choice. Please try again.')\n",
+        "\n",
+        "if __name__ == '__main__':\n",
+        "    main_menu()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 495
+        },
+        "id": "BuC39TZg-SGN",
+        "outputId": "517ec698-d4a8-4406-e988-e1758f5d29c7"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\n",
+            "Loading grades from gradebook.csv.\n",
+            "Successfully loaded 3 grades from gradebook.csv.\n",
+            "\n",
+            "= Gradebook menu =\n",
+            "1. Add New Grade\n",
+            "2. View Grades\n",
+            "3. Save Grades\n",
+            "4. Exit\n"
+          ]
+        },
+        {
+          "output_type": "error",
+          "ename": "KeyboardInterrupt",
+          "evalue": "Interrupted by user",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m                         Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_2151/1424931192.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m    110\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    111\u001b[0m \u001b[0;32mif\u001b[0m \u001b[0m__name__\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;34m'__main__'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 112\u001b[0;31m     \u001b[0mmain_menu\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;32m/tmp/ipykernel_2151/1424931192.py\u001b[0m in \u001b[0;36mmain_menu\u001b[0;34m()\u001b[0m\n\u001b[1;32m     94\u001b[0m         \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'4. Exit'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     95\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 96\u001b[0;31m         \u001b[0mchoice\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0minput\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'Enter your choice: '\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     97\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     98\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mchoice\u001b[0m \u001b[0;34m==\u001b[0m \u001b[0;34m'1'\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36mraw_input\u001b[0;34m(self, prompt)\u001b[0m\n\u001b[1;32m   1175\u001b[0m                 \u001b[0;34m\"raw_input was called, but this frontend does not support input requests.\"\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1176\u001b[0m             )\n\u001b[0;32m-> 1177\u001b[0;31m         return self._input_request(\n\u001b[0m\u001b[1;32m   1178\u001b[0m             \u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mprompt\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1179\u001b[0m             \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_parent_ident\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m\"shell\"\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.13/dist-packages/ipykernel/kernelbase.py\u001b[0m in \u001b[0;36m_input_request\u001b[0;34m(self, prompt, ident, parent, password)\u001b[0m\n\u001b[1;32m   1217\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1218\u001b[0m                 \u001b[0;31m# re-raise KeyboardInterrupt, to truncate traceback\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 1219\u001b[0;31m                 \u001b[0;32mraise\u001b[0m \u001b[0mKeyboardInterrupt\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Interrupted by user\"\u001b[0m\u001b[0;34m)\u001b[0m \u001b[0;32mfrom\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   1220\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mException\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   1221\u001b[0m                 \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mlog\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwarning\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Invalid Message:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mexc_info\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;32mTrue\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mKeyboardInterrupt\u001b[0m: Interrupted by user"
+          ]
+        }
+      ]
+    }
+  ]
+}
